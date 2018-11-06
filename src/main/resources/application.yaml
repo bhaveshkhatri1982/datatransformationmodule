@@ -1,0 +1,21 @@
+spring:
+    profiles:
+        active: dev
+    datasource:
+            dataSourceClassName: com.mchange.v2.c3p0.ComboPooledDataSource
+            url: jdbc:postgresql://localhost:5432/job_test1
+            username: postgres
+            password: postgre
+            
+    jpa:
+        database-platform: org.hibernate.dialect.PostgreSQLDialect
+        database: PostgreSQL
+        openInView: false
+        show_sql: true
+        generate-ddl: true
+        hibernate:
+            ddl-auto: none
+            naming-strategy: org.hibernate.cfg.EJB3NamingStrategy
+        properties:
+            hibernate.cache.use_query_cache: false
+            hibernate.generate_statistics: true

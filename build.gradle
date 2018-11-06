@@ -1,0 +1,65 @@
+buildscript {
+	ext {
+		springBootVersion = '2.0.4.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+		maven { url 'http://repo.spring.io/plugins-release' }
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.3.RELEASE")
+		classpath 'io.spring.gradle:propdeps-plugin:0.0.9.RELEASE'
+		classpath 'com.benjaminsproule:swagger-gradle-plugin:1.0.4'
+	}
+}
+
+plugins {
+	id 'io.franzbecker.gradle-lombok' version '1.14'
+	id 'org.springframework.boot' version '2.0.3.RELEASE'
+	id 'war'
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'io.spring.dependency-management'
+
+
+lombok {
+	version = '1.18.2'
+	sha256 = ""
+}
+
+springBoot {
+	mainClassName = 'ee.ria.datatransformationmodule.ErrorHandlingComponentApplication'
+}
+
+group = 'ee.ria'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	compile('org.springframework.boot:spring-boot-starter-web')
+	providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
+
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+	compile group: 'org.springframework', name: 'spring-oxm', version: '3.0.5.RELEASE'
+	compile group: 'com.fasterxml', name: 'jackson-xml-databind', version: '0.6.2'
+	runtime 'org.postgresql:postgresql:42.1.1'
+	
+	compile("org.springframework.boot:spring-boot-starter-data-jpa")
+}
+
+
+bootWar {
+	archiveName="${rootProject.name}.war"
+}
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '4.2.1'
+}
