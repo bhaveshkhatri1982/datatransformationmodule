@@ -1,6 +1,8 @@
 package ee.ria.datatransformationmodule.controller;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -22,9 +24,11 @@ import ee.ria.datatransformationmodule.data.BaseStationReportRequest;
 import ee.ria.datatransformationmodule.data.LocateMobileRequest;
 import ee.ria.datatransformationmodule.data.Mobile;
 import ee.ria.datatransformationmodule.data.Status;
+import ee.ria.datatransformationmodule.dto.MobileRepository;
 import ee.ria.datatransformationmodule.service.BaseStationReportService;
 import ee.ria.datatransformationmodule.service.BaseStationService;
 import ee.ria.datatransformationmodule.service.MobileService;
+import ee.ria.datatransformationmodule.utility.MobileLocator;
 import ee.ria.datatransformationmodule.utility.Utils;
 import lombok.Getter;
 import lombok.Setter;
@@ -102,16 +106,26 @@ public class DataTransformationController {
     
     @PostMapping("/locateMobile")
     public @ResponseBody ResponseEntity<Mobile> locateMobile(@RequestBody LocateMobileRequest locateMobileRequest)
-	{
+	{	
     	Mobile mobile = mobileService.findByUuid(locateMobileRequest.getMobile_station_id());
-    	
     	List<BaseStationReport> listBaseStationReport = baseStationReportService.findMostRecentMobileReports(locateMobileRequest.getMobile_station_id(), Utils.getParsedDate(locateMobileRequest.getTimeStamp()));
     	listBaseStationReport.forEach(lbs->{
     		logger.info(lbs.getBaseStation().getName() + " - "+ lbs.getTimestamp());
     	});
     	
-    	//logic for finding Mobile location
-    
+    	listBaseStationReport.sort(Comparator.comparingDouble(BaseStationReport::getDistance));
+    	
+    	if(listBaseStationReport.size()>2)
+    	{
+    		HashMap<String, Integer> mapLocation = MobileLocator.locateMobile(listBaseStationReport);
+    		mobile.setLastKnownX(mapLocation.get("x"));
+    		mobile.setLastKnownY(mapLocation.get("y"));
+	    	mobileService.save(mobile);
+    	}
+    	else
+    	{
+    		mobile.setUuid("Error: Either UUID is not found or last detection involves less than 3 base stations");
+    	}
     	return new ResponseEntity<>(mobile, HttpStatus.OK);
 	}
     

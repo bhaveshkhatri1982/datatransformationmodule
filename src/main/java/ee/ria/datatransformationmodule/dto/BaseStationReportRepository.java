@@ -17,7 +17,7 @@ import ee.ria.datatransformationmodule.data.BaseStationReport;
 @Scope("prototype")
 public interface BaseStationReportRepository extends CrudRepository<BaseStationReport, Integer>
 {
-	@Query("from BaseStationReport where mobile.uuid=:uuid and timeStamp<:timeStamp order By timeStamp desc")
+	@Query("from BaseStationReport where mobile.uuid=:uuid and timeStamp<=:timeStamp order By timeStamp desc")
 	List<BaseStationReport> findMostRecentMobileReportTimeStamp(Pageable pageable, @Param("uuid") String uuid, @Param("timeStamp") LocalDateTime timeStamp);
 	
 	@Query("from BaseStationReport where mobile.uuid=:uuid and timeStamp=:timeStamp")

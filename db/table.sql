@@ -1,6 +1,6 @@
 CREATE TABLE public.m_base_station
 (
-  base_station_id bigserial NOT NULL,
+  base_station_id bigint NOT NULL DEFAULT nextval('m_base_station_base_station_id_seq'::regclass),
   uuid character varying(255),
   name character varying(255),
   x_value integer DEFAULT 0,
@@ -13,9 +13,11 @@ WITH (
   OIDS=FALSE
 );
 
+
+
 CREATE TABLE public.m_mobile
 (
-  mobile_id bigserial NOT NULL,
+  mobile_id bigint NOT NULL DEFAULT nextval('mobile_mobile_id_seq'::regclass),
   uuid character varying(255),
   last_known_x integer DEFAULT 0,
   last_known_y integer DEFAULT 0,
@@ -28,7 +30,7 @@ WITH (
 
 CREATE TABLE public.t_bs_report_detail
 (
-  bs_report_detail_id bigserial NOT NULL,
+  bs_report_detail_id bigint NOT NULL DEFAULT nextval('t_bs_report_detail_bs_report_detail_id_seq'::regclass),
   base_station_id bigint NOT NULL,
   mobile_id bigint NOT NULL,
   distance double precision DEFAULT 0.0,
