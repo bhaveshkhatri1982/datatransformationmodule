@@ -18,32 +18,37 @@ Input JSON
 
 {  
 
-   "base_station_id": "b1",
+	"base_station_id": "b1",
    
-   "listMobileReport":[
-   	{
-      
-         "mobile_station_id":"m1",
-	 
-         "distance":10,
-	 
-         "timeStamp":"2018-10-02 00:00:00"
-	 
-      	},
-      
-	{  
-	  
-         "mobile_station_id":"m2",
-	 
-         "distance":13,
-	 
-         "timeStamp":"2018-10-02 01:01:01"
-	 
-      	}
+   	"listMobileReport":
+   	[
+   
+		{
+
+		 "mobile_station_id":"m1",
+
+		 "distance":10,
+
+		 "timeStamp":"2018-10-02 00:00:00"
+
+		},
+
+		{  
+
+		 "mobile_station_id":"m2",
+
+		 "distance":13,
+
+		 "timeStamp":"2018-10-02 01:01:01"
+
+		}
 	
-   ]
-   
+	]
+  
 }
+
+
+
 
 
 
