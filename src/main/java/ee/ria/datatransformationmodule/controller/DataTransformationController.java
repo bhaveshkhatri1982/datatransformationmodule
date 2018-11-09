@@ -108,24 +108,32 @@ public class DataTransformationController {
     public @ResponseBody ResponseEntity<Mobile> locateMobile(@RequestBody LocateMobileRequest locateMobileRequest)
 	{	
     	Mobile mobile = mobileService.findByUuid(locateMobileRequest.getMobile_station_id());
-    	List<BaseStationReport> listBaseStationReport = baseStationReportService.findMostRecentMobileReports(locateMobileRequest.getMobile_station_id(), Utils.getParsedDate(locateMobileRequest.getTimeStamp()));
-    	listBaseStationReport.forEach(lbs->{
-    		logger.info(lbs.getBaseStation().getName() + " - "+ lbs.getTimestamp());
-    	});
-    	
-    	listBaseStationReport.sort(Comparator.comparingDouble(BaseStationReport::getDistance));
-    	
-    	if(listBaseStationReport.size()>2)
-    	{
-    		HashMap<String, Integer> mapLocation = MobileLocator.locateMobile(listBaseStationReport);
-    		mobile.setLastKnownX(mapLocation.get("x"));
-    		mobile.setLastKnownY(mapLocation.get("y"));
-	    	mobileService.save(mobile);
+    	if(mobile !=  null)
+    	{	
+	    	List<BaseStationReport> listBaseStationReport = baseStationReportService.findMostRecentMobileReports(locateMobileRequest.getMobile_station_id(), Utils.getParsedDate(locateMobileRequest.getTimeStamp()));
+	    	listBaseStationReport.forEach(lbs->{
+	    		logger.info(lbs.getBaseStation().getName() + " - "+ lbs.getTimestamp());
+	    	});
+	    	
+	    	listBaseStationReport.sort(Comparator.comparingDouble(BaseStationReport::getDistance));
+	    	
+	    	if(listBaseStationReport.size()<3)
+	    	{
+	    		mobile.setUuid("Error: Either UUID is not found or last detection involves less than 3 base stations");
+	    	}
+	    	else
+	    	{
+	    		HashMap<String, Integer> mapLocation = MobileLocator.locateMobile(listBaseStationReport);
+	    		mobile.setLastKnownX(mapLocation.get("x"));
+	    		mobile.setLastKnownY(mapLocation.get("y"));
+		    	mobileService.save(mobile);
+	    	}	
     	}
     	else
     	{
+    		mobile = new Mobile();
     		mobile.setUuid("Error: Either UUID is not found or last detection involves less than 3 base stations");
-    	}
+    	}	
     	return new ResponseEntity<>(mobile, HttpStatus.OK);
 	}
     

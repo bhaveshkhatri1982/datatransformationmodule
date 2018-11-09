@@ -13,6 +13,10 @@ WITH (
   OIDS=FALSE
 );
 
+INSERT INTO public.m_base_station( uuid, name, x_value, y_value, detection_radius)
+    VALUES 	('b1', 'base Station 1', 4, 8, 20),
+	   		('b2', 'base Station 2', 11, 7, 30),
+	  		('b3', 'base Station 3', 16, 17, 35);
 
 
 CREATE TABLE public.m_mobile
@@ -27,6 +31,10 @@ CREATE TABLE public.m_mobile
 WITH (
   OIDS=FALSE
 );
+
+INSERT INTO public.m_mobile(uuid, last_known_x, last_known_y)
+    VALUES 	('m1', 0, 0),
+	   		('m2', 0, 0);
 
 CREATE TABLE public.t_bs_report_detail
 (
@@ -46,3 +54,8 @@ CREATE TABLE public.t_bs_report_detail
 WITH (
   OIDS=FALSE
 );
+
+INSERT INTO public.t_bs_report_detail(base_station_id, mobile_id, distance, "timestamp")
+    VALUES 	(1, 2, 5, '2018-10-03 01:01:12'),
+	    	(2, 2, 5, '2018-10-03 01:01:12'),
+	    	(3, 2, 10, '2018-10-03 01:01:12');
